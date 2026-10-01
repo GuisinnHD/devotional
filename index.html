@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="color-scheme" content="dark" />
+  <title>Plano Bíblico</title>
+  <meta name="theme-color" content="#0e1311" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="icon-192.png" type="image/png" />
+  <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Plano Bíblico" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:ital,wght@0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg: #0e1311;
+      --surface: #161d1a;
+      --surface-2: #1d2622;
+      --rule: #27312d;
+      --text: #ece8dc;
+      --muted: #8f9b94;
+      --sage: #86cba0;
+      --sage-ink: #0b1a12;
+      --lamp: #e6b85c;
+      --lamp-ink: #241903;
+      --serif: 'Lora', Georgia, serif;
+      --sans: 'Inter', system-ui, sans-serif;
+      color-scheme: dark;
+    }
+
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { scroll-padding-top: 90px; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button { font: inherit; color: inherit; }
+    :focus-visible { outline: 2px solid var(--lamp); outline-offset: 2px; }
+
+    /* ---------- Cabeçalho fixo ---------- */
+    .topo {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--bg);
+      padding: calc(env(safe-area-inset-top, 0px) + 12px) 16px 0;
+    }
+
+    .topo-in { max-width: 640px; margin: 0 auto; }
+
+    .topo-linha {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.35rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h1 i { color: var(--sage); font-size: 1.05rem; }
+
+    #seletorMes {
+      background: transparent;
+      border: none;
+      color: inherit;
+      font: inherit;
+      cursor: pointer;
+      padding: 0 4px 0 0;
+    }
+    #seletorMes option { background: var(--surface); color: var(--text); }
+
+    .contagem { font-size: 0.85rem; color: var(--muted); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+    .barra { height: 4px; background: var(--rule); border-radius: 4px; overflow: hidden; }
+    .barra > div { height: 100%; width: 0; background: var(--sage); transition: width .5s ease; }
+    .topo-fim { height: 12px; }
+
+    main { max-width: 640px; margin: 0 auto; padding: 8px 16px calc(env(safe-area-inset-bottom, 0px) + 110px); }
+
+    /* ---------- Cartão do dia ---------- */
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-left: 4px solid var(--lamp);
+      border-radius: 20px;
+      padding: 20px 20px 18px;
+      margin-bottom: 28px;
+    }
+    .hero.lido { border-left-color: var(--sage); }
+
+    .hero-data { margin: 0 0 14px; font-size: 0.9rem; color: var(--muted); }
+
+    .hero-caps { margin: 0 0 16px; }
+    .hero-cap {
+      margin: 0;
+      font-family: var(--serif);
+      font-weight: 600;
+      font-size: 1.9rem;
+      line-height: 1.2;
+    }
+    .hero-cap.segundo { font-size: 1.35rem; font-weight: 500; color: var(--muted); margin-top: 4px; }
+
+    .verso { margin: 0 0 18px; padding-top: 14px; border-top: 1px solid var(--rule); }
+    .verso-texto { display: block; font-family: var(--serif); font-style: italic; font-size: 1.05rem; line-height: 1.6; max-width: 56ch; }
+    .verso-ref { display: block; margin-top: 6px; font-size: 0.8rem; color: var(--muted); }
+
+    .hero-btn {
+      width: 100%;
+      min-height: 52px;
+      border-radius: 14px;
+      border: 2px solid var(--sage);
+      background: var(--sage);
+      color: var(--sage-ink);
+      font-weight: 600;
+      font-size: 1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .hero.lido .hero-btn { background: transparent; color: var(--sage); }
+
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 18px;
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+    .hero-meta:empty { display: none; }
+    .link-atraso { background: none; border: none; padding: 0; color: var(--lamp); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+
+    /* ---------- Calendário ---------- */
+    .secao-titulo { margin: 0 0 10px; font-size: 0.95rem; font-weight: 600; }
+
+    .calendario {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 32px;
+    }
+    .cal-sem { text-align: center; font-size: 0.75rem; color: var(--muted); padding-bottom: 2px; }
+    .cal-dia {
+      aspect-ratio: 1;
+      border-radius: 10px;
+      border: 1px solid var(--rule);
+      background: var(--surface);
+      color: var(--muted);
+      font-size: 0.85rem;
+      font-variant-numeric: tabular-nums;
+      cursor: pointer;
+      padding: 0;
+    }
+    .cal-dia.lido { background: var(--sage); border-color: var(--sage); color: var(--sage-ink); font-weight: 600; }
+    .cal-dia.atrasado { color: var(--text); border-bottom: 3px solid var(--lamp); }
+    .cal-dia.hoje { outline: 2px solid var(--lamp); outline-offset: 2px; color: var(--text); font-weight: 600; }
+    .cal-dia.hoje.lido { color: var(--sage-ink); }
+
+    /* ---------- Lista ---------- */
+    .lista { list-style: none; margin: 0; padding: 0; }
+
+    .dia {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      align-items: center;
+      column-gap: 12px;
+      padding: 12px 6px;
+      border-bottom: 1px solid var(--rule);
+      border-radius: 14px;
+      cursor: pointer;
+      scroll-margin-top: 90px;
+    }
+    .dia.lido, .dia.hoje { border-bottom-color: transparent; }
+    .dia.lido { background: color-mix(in srgb, var(--sage) 10%, transparent); }
+    .dia.hoje { background: color-mix(in srgb, var(--lamp) 12%, transparent); }
+    .dia.hoje.lido { background: color-mix(in srgb, var(--sage) 10%, transparent); }
+    .dia.futuro .textos { opacity: .75; }
+    .dia.lido .textos { opacity: .6; }
+
+    .check {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 2px solid var(--rule);
+      background: transparent;
+      color: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      padding: 0;
+      font-size: 0.95rem;
+      transition: background .2s ease, border-color .2s ease, color .2s ease;
+    }
+    .dia.hoje .check { border-color: var(--lamp); }
+    .check.checked { background: var(--sage); border-color: var(--sage); color: var(--sage-ink); }
+    .check.pop { animation: pop .35s ease; }
+
+    @keyframes pop { 0% { transform: scale(1); } 45% { transform: scale(1.25); } 100% { transform: scale(1); } }
+    @keyframes flash { 0% { background: color-mix(in srgb, var(--lamp) 30%, transparent); } 100% { background: transparent; } }
+    .dia.flash { animation: flash 1.4s ease; }
+
+    .textos { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+    .num { font-size: 0.75rem; color: var(--muted); }
+    .tag-atraso { display: none; margin-left: 8px; color: var(--lamp); font-weight: 500; }
+    .dia.atrasado .tag-atraso { display: inline; }
+    .cap-p { font-family: var(--serif); font-weight: 600; font-size: 1.08rem; }
+    .cap-c { font-size: 0.9rem; color: var(--muted); }
+
+    .ver {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+    }
+    .ver:hover, .ver[aria-expanded="true"] { color: var(--lamp); }
+
+    .versiculo { grid-column: 2 / -1; margin: 10px 0 4px; cursor: default; }
+
+    /* ---------- Rodapé e botão flutuante ---------- */
+    .rodape { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; margin-top: 36px; }
+    .btn-quieto {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 8px 4px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+    .btn-quieto:hover { color: var(--text); }
+
+    .flutuante {
+      position: fixed;
+      left: 50%;
+      bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+      transform: translateX(-50%);
+      background: var(--lamp);
+      color: var(--lamp-ink);
+      border: none;
+      border-radius: 999px;
+      padding: 12px 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: 0 6px 20px rgba(0,0,0,.35);
+      cursor: pointer;
+      z-index: 30;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+      html { scroll-behavior: auto; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="topo">
+    <div class="topo-in">
+      <div class="topo-linha">
+        <h1>
+          <i class="fa-solid fa-book-bible" aria-hidden="true"></i>
+          <span id="tituloMes"></span>
+          <select id="seletorMes" aria-label="Escolher mês" hidden></select>
+        </h1>
+        <span class="contagem" id="progressCount" aria-live="polite"></span>
+      </div>
+      <div class="barra" role="progressbar" aria-label="Progresso do mês" id="barraWrap" aria-valuemin="0" aria-valuemax="100">
+        <div id="progressBar"></div>
+      </div>
+      <div class="topo-fim"></div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="hero" aria-label="Leitura do dia"></section>
+
+    <h2 class="secao-titulo">Calendário do mês</h2>
+    <div class="calendario" id="calendario"></div>
+
+    <h2 class="secao-titulo">Todos os dias</h2>
+    <ul class="lista" id="lista"></ul>
+
+    <div class="rodape">
+      <button class="btn-quieto" id="btnExportar">Exportar progresso</button>
+      <button class="btn-quieto" id="btnImportar">Importar progresso</button>
+      <button class="btn-quieto" id="btnReset">Zerar este mês</button>
+      <input type="file" id="arquivoImport" accept="application/json" hidden>
+    </div>
+  </main>
+
+  <button class="flutuante" id="irHoje" hidden>Ir para hoje</button>
+
+  <script src="meses.js"></script>
+  <script>
+    
+
+
+    // ---------- Armazenamento seguro (não quebra em modo anônimo) ----------
+    const store = {
+      get(k)    { try { return localStorage.getItem(k); } catch { return null; } },
+      set(k, v) { try { localStorage.setItem(k, v); } catch {} },
+      del(k)    { try { localStorage.removeItem(k); } catch {} },
+      keys()    { try { return Object.keys(localStorage); } catch { return []; } }
+    };
+
+    // ---------- Estado ----------
+    const hoje = new Date();
+    const chaveHoje = `${hoje.getFullYear()}-${String(hoje.getMonth() + 1).padStart(2, "0")}`;
+    const chavesOrdenadas = Object.keys(MESES).sort();
+    let mesAtual = MESES[chaveHoje] ? chaveHoje : chavesOrdenadas[chavesOrdenadas.length - 1];
+    let observador = null;
+
+    const $ = (id) => document.getElementById(id);
+    const lista = $("lista");
+
+    const dados = () => MESES[mesAtual];
+    const total = () => dados().dias.length;
+    const idDia = (dia) => `plano-${mesAtual}-dia${dia}`;
+    const lido = (dia) => store.get(idDia(dia)) === "true";
+    const ehMesAtual = () => mesAtual === chaveHoje;
+
+    const passou  = (dia) => mesAtual < chaveHoje || (ehMesAtual() && dia < hoje.getDate());
+    const ehHoje  = (dia) => ehMesAtual() && dia === hoje.getDate();
+    const futuro  = (dia) => mesAtual > chaveHoje || (ehMesAtual() && dia > hoje.getDate());
+
+    function atrasados() {
+      const out = [];
+      for (let d = 1; d <= total(); d++) if (passou(d) && !lido(d)) out.push(d);
+      return out;
+    }
+
+    function totalLidos() {
+      let n = 0;
+      for (let d = 1; d <= total(); d++) if (lido(d)) n++;
+      return n;
+    }
+
+    function sequenciaAtual() {
+      let d = ehMesAtual() ? hoje.getDate() : (mesAtual < chaveHoje ? total() : 0);
+      if (d && !lido(d)) d--; // hoje ainda não quebra a sequência
+      let n = 0;
+      while (d >= 1 && lido(d)) { n++; d--; }
+      return n;
+    }
+
+    // Dia mostrado no cartão: hoje, ou a próxima leitura pendente em outros meses
+    function diaDoCartao() {
+      if (ehMesAtual()) return Math.min(hoje.getDate(), total());
+      for (let d = 1; d <= total(); d++) if (!lido(d)) return d;
+      return null;
+    }
+
+    function versoHTML(v) {
+      const i = v.indexOf(" - ");
+      const ref = i > -1 ? v.slice(0, i) : "";
+      const texto = i > -1 ? v.slice(i + 3) : v;
+      return `<span class="verso-texto">${texto}</span>${ref ? `<span class="verso-ref">${ref}</span>` : ""}`;
+    }
+
+    // ---------- Cabeçalho ----------
+    function montarSeletor() {
+      const sel = $("seletorMes");
+      sel.innerHTML = "";
+      chavesOrdenadas.forEach((k) => {
+        sel.add(new Option(`${MESES[k].nome} ${k.split("-")[0]}`, k, false, k === mesAtual));
+      });
+      const varios = chavesOrdenadas.length > 1;
+      sel.hidden = !varios;
+      $("tituloMes").hidden = varios;
+    }
+
+    function atualizarProgresso() {
+      const t = total();
+      const l = totalLidos();
+      const perc = Math.round((l / t) * 100);
+      $("progressBar").style.width = perc + "%";
+      $("barraWrap").setAttribute("aria-valuenow", perc);
+      $("progressCount").textContent = `${l} de ${t} dias`;
+    }
+
+    // ---------- Cartão do dia ----------
+    function renderHero() {
+      const hero = $("hero");
+      const dia = diaDoCartao();
+
+      if (dia === null) {
+        hero.className = "hero lido";
+        hero.innerHTML = `
+          <p class="hero-cap">Mês concluído</p>
+          <p class="hero-data" style="margin:8px 0 0">Todos os ${total()} dias de ${dados().nome} foram lidos.</p>`;
+        return;
+      }
+
+      const item = dados().dias[dia - 1];
+      const marcado = lido(dia);
+      let quando;
+      if (ehMesAtual()) {
+        quando = "Hoje, " + hoje.toLocaleDateString("pt-BR", { weekday: "long", day: "numeric", month: "long" });
+      } else {
+        quando = `Próxima leitura: dia ${dia}`;
+      }
+
+      const meta = [];
+      const seq = sequenciaAtual();
+      if (seq >= 2) meta.push(`<span>🔥 ${seq} dias seguidos</span>`);
+      const atr = atrasados();
+      if (atr.length) {
+        meta.push(`<button class="link-atraso" type="button" id="verAtrasados">${atr.length} ${atr.length === 1 ? "dia atrasado" : "dias atrasados"}</button>`);
+      }
+      if (totalLidos() === total()) meta.push("<span>Mês completo 🎉</span>");
+
+      hero.className = "hero" + (marcado ? " lido" : "");
+      hero.innerHTML = `
+        <p class="hero-data">${quando}</p>
+        <div class="hero-caps">
+          <p class="hero-cap">${item.p}</p>
+          <p class="hero-cap segundo">${item.c}</p>
+        </div>
+        <p class="verso">${versoHTML(item.v)}</p>
+        <button class="hero-btn" type="button" id="heroBtn">
+          <i class="fa-solid fa-check" aria-hidden="true"></i>
+          ${marcado ? "Lido, toque para desfazer" : "Marcar como lido"}
+        </button>
+        <div class="hero-meta">${meta.join("")}</div>`;
+
+      $("heroBtn").addEventListener("click", () => alternar(dia));
+      const va = $("verAtrasados");
+      if (va) va.addEventListener("click", () => irParaDia(atr[0]));
+    }
+
+    // ---------- Calendário ----------
+    function renderCalendario() {
+      const cal = $("calendario");
+      const [ano, mes] = mesAtual.split("-").map(Number);
+      const offset = new Date(ano, mes - 1, 1).getDay(); // domingo = 0
+      let html = ["D", "S", "T", "Q", "Q", "S", "S"].map((s) => `<span class="cal-sem" aria-hidden="true">${s}</span>`).join("");
+      html += '<span></span>'.repeat(offset);
+
+      for (let d = 1; d <= total(); d++) {
+        const classes = ["cal-dia"];
+        const estado = lido(d) ? "lido" : (passou(d) ? "atrasado" : (ehHoje(d) ? "hoje" : "pendente"));
+        if (lido(d)) classes.push("lido");
+        else if (passou(d)) classes.push("atrasado");
+        if (ehHoje(d)) classes.push("hoje");
+        html += `<button class="${classes.join(" ")}" type="button" data-dia="${d}" aria-label="Dia ${d}, ${estado}">${d}</button>`;
+      }
+      cal.innerHTML = html;
+      cal.querySelectorAll(".cal-dia").forEach((b) =>
+        b.addEventListener("click", () => irParaDia(Number(b.dataset.dia)))
+      );
+    }
+
+    // ---------- Lista ----------
+    function classesLinha(dia) {
+      const c = ["dia"];
+      if (lido(dia)) c.push("lido");
+      if (ehHoje(dia)) c.push("hoje");
+      if (futuro(dia)) c.push("futuro");
+      if (passou(dia) && !lido(dia)) c.push("atrasado");
+      return c.join(" ");
+    }
+
+    function renderLista() {
+      lista.innerHTML = "";
+      dados().dias.forEach((item, i) => {
+        const dia = i + 1;
+        const marcado = lido(dia);
+        const li = document.createElement("li");
+        li.className = classesLinha(dia);
+        li.dataset.dia = dia;
+        li.innerHTML = `
+          <button class="check ${marcado ? "checked" : ""}" type="button" role="checkbox"
+                  aria-checked="${marcado}" aria-label="Dia ${dia}: marcar como lido">
+            <i class="fa-solid fa-check" aria-hidden="true"></i>
+          </button>
+          <div class="textos">
+            <span class="num">Dia ${dia}<span class="tag-atraso">atrasado</span></span>
+            <span class="cap-p">${item.p}</span>
+            <span class="cap-c">${item.c}</span>
+          </div>
+          <button class="ver" type="button" aria-expanded="false" aria-controls="verso-${dia}"
+                  aria-label="Versículo-chave de ${item.p}" title="Versículo-chave">
+            <i class="fa-solid fa-book-open" aria-hidden="true"></i>
+          </button>
+          <p class="versiculo verso" id="verso-${dia}" hidden>${versoHTML(item.v)}</p>
+        `;
+
+        li.addEventListener("click", (e) => {
+          if (e.target.closest(".ver") || e.target.closest(".versiculo")) return;
+          alternar(dia);
+        });
+
+        const ver = li.querySelector(".ver");
+        ver.addEventListener("click", (e) => {
+          e.stopPropagation();
+          const aberto = ver.getAttribute("aria-expanded") === "true";
+          ver.setAttribute("aria-expanded", String(!aberto));
+          li.querySelector(".versiculo").hidden = aberto;
+        });
+
+        lista.appendChild(li);
+      });
+    }
+
+    function atualizarLinha(dia, animar) {
+      const li = lista.querySelector(`[data-dia="${dia}"]`);
+      if (!li) return;
+      const marcado = lido(dia);
+      li.className = classesLinha(dia);
+      const btn = li.querySelector(".check");
+      btn.classList.toggle("checked", marcado);
+      btn.setAttribute("aria-checked", String(marcado));
+      if (animar && marcado) {
+        btn.classList.remove("pop");
+        void btn.offsetWidth;
+        btn.classList.add("pop");
+      }
+    }
+
+    function alternar(dia) {
+      store.set(idDia(dia), String(!lido(dia)));
+      atualizarLinha(dia, true);
+      renderHero();
+      renderCalendario();
+      atualizarProgresso();
+    }
+
+    function irParaDia(dia) {
+      const li = lista.querySelector(`[data-dia="${dia}"]`);
+      if (!li) return;
+      li.scrollIntoView({ block: "center", behavior: "smooth" });
+      li.classList.remove("flash");
+      void li.offsetWidth;
+      li.classList.add("flash");
+    }
+
+    // ---------- Botão "Ir para hoje" ----------
+    function observarHoje() {
+      if (observador) observador.disconnect();
+      const botao = $("irHoje");
+      botao.hidden = true;
+      if (!ehMesAtual()) return;
+      const li = lista.querySelector(`[data-dia="${hoje.getDate()}"]`);
+      if (!li || !("IntersectionObserver" in window)) return;
+      observador = new IntersectionObserver(([entrada]) => {
+        // Só aparece quando a linha de hoje está fora da tela e o cartão do topo já saiu de vista
+        botao.hidden = entrada.isIntersecting || window.scrollY < 300;
+      });
+      observador.observe(li);
+    }
+    window.addEventListener("scroll", () => {
+      if (!ehMesAtual()) return;
+      if (window.scrollY < 300) $("irHoje").hidden = true;
+    }, { passive: true });
+
+    $("irHoje").addEventListener("click", () => irParaDia(hoje.getDate()));
+
+    // ---------- Início / troca de mês ----------
+    function render() {
+      const { nome } = dados();
+      document.title = `Plano Bíblico - ${nome}`;
+      $("tituloMes").textContent = `${nome} ${mesAtual.split("-")[0]}`;
+      renderLista();
+      renderCalendario();
+      renderHero();
+      atualizarProgresso();
+      observarHoje();
+    }
+
+    $("seletorMes").addEventListener("change", (e) => {
+      mesAtual = e.target.value;
+      render();
+      window.scrollTo({ top: 0 });
+    });
+
+    // ---------- Zerar mês ----------
+    $("btnReset").addEventListener("click", () => {
+      if (!confirm(`Zerar todo o progresso de ${dados().nome}?`)) return;
+      for (let d = 1; d <= total(); d++) store.del(idDia(d));
+      render();
+    });
+
+    // ---------- Exportar / importar ----------
+    $("btnExportar").addEventListener("click", () => {
+      const out = {};
+      store.keys().filter((k) => k.startsWith("plano-")).forEach((k) => (out[k] = store.get(k)));
+      const blob = new Blob([JSON.stringify(out, null, 2)], { type: "application/json" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `progresso-plano-biblico-${chaveHoje}.json`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    $("btnImportar").addEventListener("click", () => $("arquivoImport").click());
+
+    $("arquivoImport").addEventListener("change", async (e) => {
+      const arquivo = e.target.files[0];
+      if (!arquivo) return;
+      try {
+        const obj = JSON.parse(await arquivo.text());
+        Object.entries(obj).forEach(([k, v]) => {
+          if (k.startsWith("plano-")) store.set(k, String(v));
+        });
+        render();
+        alert("Progresso importado!");
+      } catch {
+        alert("Arquivo inválido.");
+      }
+      e.target.value = "";
+    });
+
+    montarSeletor();
+    render();
+
+    // ---------- Instalável / offline ----------
+    if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+      window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+    }
+  </script>
+</body>
+</html>
