@@ -41,13 +41,7 @@ const MESES = {
       { p: "Salmo 37",            c: "Apocalipse 22",    v: "Salmo 37:5 - Entrega o teu caminho ao Senhor; confia nele." }
     ]
   },
-   /* =====================================================================
-   ARQUIVO QUE VOCÊ EDITA TODO MÊS (meses.js)
-   Copie um bloco, mude a chave ("AAAA-MM"), o nome e os dias.
-   p = capítulo principal | c = complementar | v = versículo-chave
-   (o versículo é do capítulo principal, no formato "Livro 1:1 - texto")
-   ===================================================================== */
-const MESES = {
+   {
   "2026-11": {
     nome: "Novembro",
     dias: [
