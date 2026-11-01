@@ -41,7 +41,6 @@ const MESES = {
       { p: "Salmo 37",            c: "Apocalipse 22",    v: "Salmo 37:5 - Entrega o teu caminho ao Senhor; confia nele." }
     ]
   },
-   {
   "2026-11": {
     nome: "Novembro",
     dias: [
